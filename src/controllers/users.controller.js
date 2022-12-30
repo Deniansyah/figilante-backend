@@ -74,7 +74,7 @@ exports.createUser = async (req, res) => {
         password,
         phoneNumber,
         gender,
-        birthdate,
+        birthdate: new Date(birthdate),
         picture,
         isAdmin,
       },
@@ -87,7 +87,18 @@ exports.createUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    if (error.code === "P2002" && error.meta.target.includes("email")) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already exists",
+      });
+    }
+    if (error.code === "P2002" && error.meta.target.includes("phoneNumber")) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone number already exists",
+      });
+    }
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -124,7 +135,7 @@ exports.updateUser = async (req, res) => {
         password,
         phoneNumber,
         gender,
-        birthdate,
+        birthdate: new Date(birthdate),
         picture,
         isAdmin,
       },
