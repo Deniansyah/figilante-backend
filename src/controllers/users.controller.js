@@ -8,9 +8,7 @@ exports.getUsers = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "List of users",
-      results: {
-        users,
-      },
+      results: users,
     });
   } catch (error) {
     return res.status(500).json({
@@ -37,9 +35,7 @@ exports.getUser = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: `User with id ${id} found`,
-      results: {
-        user,
-      },
+      results: user,
     });
   } catch (error) {
     return res.status(500).json({
@@ -82,9 +78,7 @@ exports.createUser = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "User created successfully",
-      results: {
-        user,
-      },
+      results: user,
     });
   } catch (error) {
     if (error.code === "P2002" && error.meta.target.includes("email")) {
@@ -143,9 +137,7 @@ exports.updateUser = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: `User with id ${id} updated successfully`,
-      results: {
-        user,
-      },
+      results: user,
     });
   } catch (error) {
     if (error.code === "P2025") {
@@ -172,9 +164,7 @@ exports.deleteUser = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: `User with id ${id} deleted successfully`,
-      results: {
-        user,
-      },
+      results: user,
     });
   } catch (error) {
     if (error.code === "P2025") {
