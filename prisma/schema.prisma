@@ -23,7 +23,7 @@ model users {
   createdAt                     DateTime?      @default(now()) @db.Timestamptz(6)
   updatedAt                     DateTime?      @db.Timestamptz(6)
   carts                         carts[]
-  chats_chats_formUserIdTousers chats[]        @relation("chats_formUserIdTousers")
+  chats_chats_fromUserIdTousers chats[]        @relation("chats_fromUserIdTousers")
   chats_chats_toUserIdTousers   chats[]        @relation("chats_toUserIdTousers")
   transactions                  transactions[]
 }
@@ -52,10 +52,10 @@ model chats {
   id                            Int       @id(map: "chat_pkey") @default(autoincrement())
   createdAt                     DateTime? @default(now()) @db.Timestamptz(6)
   updatedAt                     DateTime? @default(now()) @db.Timestamptz(6)
-  formUserId                    Int?
+  fromUserId                    Int?
   message                       String?
   toUserId                      Int?
-  users_chats_formUserIdTousers users?    @relation("chats_formUserIdTousers", fields: [formUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_chats_fromUserIdTousers users?    @relation("chats_fromUserIdTousers", fields: [fromUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users_chats_toUserIdTousers   users?    @relation("chats_toUserIdTousers", fields: [toUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 

@@ -1,14 +1,10 @@
-const {
-  findAllUsers,
-  findUserById,
-  createUser,
-  updateUser,
-  deleteUser
-} = require("../models/users.model");
+const { PrismaClient } = require("@prisma/client");
+
+const prisma = new PrismaClient();
 
 exports.getUsers = async (req, res) => {
   try {
-    const users = await findAllUsers();
+    const users = await prisma.users.findMany();
     return res.status(200).json({
       success: true,
       message: "List of users",
@@ -24,20 +20,24 @@ exports.getUsers = async (req, res) => {
 
 exports.getUser = async (req, res) => {
   try {
-    const user = await findUserById(req.params.id);
+    const { id } = req.params;
+    const user = await prisma.users.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: `User with id ${user.id} not found`,
+        message: `User with id ${id} not found`,
       });
     }
     return res.status(200).json({
       success: true,
-      message: `User with id ${user.id} found`,
+      message: `User with id ${id} found`,
       results: user,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -47,7 +47,34 @@ exports.getUser = async (req, res) => {
 
 exports.createUser = async (req, res) => {
   try {
-    const user = await createUser(req.body);
+    const {
+      nickName,
+      firstName,
+      lastName,
+      address,
+      email,
+      password,
+      phoneNumber,
+      gender,
+      birthdate,
+      picture,
+      isAdmin,
+    } = req.body;
+    const user = await prisma.users.create({
+      data: {
+        nickName,
+        firstName,
+        lastName,
+        address,
+        email,
+        password,
+        phoneNumber,
+        gender,
+        birthdate: new Date(birthdate),
+        picture,
+        isAdmin,
+      },
+    });
     res.status(201).json({
       success: true,
       message: "User created successfully",
@@ -74,18 +101,49 @@ exports.createUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
+  const { id } = req.params;
+  const {
+    nickName,
+    firstName,
+    lastName,
+    address,
+    email,
+    password,
+    phoneNumber,
+    gender,
+    birthdate,
+    picture,
+    isAdmin,
+  } = req.body;
   try {
-    const user = await updateUser(req.params.id, req.body);
+    const user = await prisma.users.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: {
+        nickName,
+        firstName,
+        lastName,
+        address,
+        email,
+        password,
+        phoneNumber,
+        gender,
+        birthdate: new Date(birthdate),
+        picture,
+        isAdmin,
+      },
+    });
     return res.status(200).json({
       success: true,
-      message: `User with id ${user.id} updated successfully`,
+      message: `User with id ${id} updated successfully`,
       results: user,
     });
   } catch (error) {
     if (error.code === "P2025") {
       return res.status(404).json({
         success: false,
-        message: `User with id ${user.id} not found`,
+        message: `User with id ${id} not found`,
       });
     }
     return res.status(500).json({
@@ -96,18 +154,23 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
+  const { id } = req.params;
   try {
-    const user = await deleteUser(req.params.id);
+    const user = await prisma.users.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
     return res.status(200).json({
       success: true,
-      message: `User with id ${user.id} deleted successfully`,
+      message: `User with id ${id} deleted successfully`,
       results: user,
     });
   } catch (error) {
     if (error.code === "P2025") {
       return res.status(404).json({
         success: false,
-        message: `User with id ${user.id} not found`,
+        message: `User with id ${id} not found`,
       });
     }
     return res.status(500).json({
