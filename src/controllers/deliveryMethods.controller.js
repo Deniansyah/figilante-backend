@@ -11,7 +11,7 @@ exports.getAllDeliveryMethods = async (req, res) => {
       results: allDeliveryMethod,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -84,10 +84,10 @@ exports.updateDeliveryMethods = async (req, res) => {
     if (error.code === "P2025") {
       return res.status(404).json({
         success: false,
-        message: `User with id ${id} not found`,
+        message: `deliveryMethod with id ${id} not found`,
       });
     }
-    console.log(error)
+    console.log(error);
     return res.status(500).json({
       success: false,
       message: `Internal server error`,
@@ -110,7 +110,7 @@ exports.deleteDeliveryMethods = async (req, res) => {
     if (error.code === "P2025") {
       return res.status(404).json({
         success: false,
-        message: `User with id ${id} not found`,
+        message: `deliveryMethod with id ${id} not found`,
       });
     }
     return res.status(500).json({
