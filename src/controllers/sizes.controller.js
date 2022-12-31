@@ -2,41 +2,41 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-exports.getAllDeliveryMethods = async (req, res) => {
+exports.getAllSizes = async (req, res) => {
   try {
-    const allDeliveryMethod = await prisma.deliveryMethods.findMany();
+    const allSize = await prisma.sizes.findMany();
     return res.status(200).json({
       success: true,
-      message: "List of deliveryMethod",
-      results: allDeliveryMethod,
+      message: "List of size",
+      results: allSize,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
+      results: allSize,
     });
   }
 };
 
-exports.getDeliveryMethodsById = async (req, res) => {
+exports.getSizeById = async (req, res) => {
   const { id } = req.params;
   try {
-    const deliveryMethod = await prisma.deliveryMethods.findUnique({
+    const size = await prisma.sizes.findUnique({
       where: {
         id: parseInt(id),
       },
     });
-    if (!deliveryMethod) {
+    if (!size) {
       return res.status(404).json({
         success: false,
-        message: `deliveryMethod with id: ${id} not found`,
+        message: `size with id: ${id} not found`,
       });
     }
     return res.status(200).json({
       success: true,
-      message: `deliveryMethod with id: ${id} found`,
-      results: deliveryMethod,
+      message: `size with id: ${id} found`,
+      results: size,
     });
   } catch (error) {
     return res.status(500).json({
@@ -46,16 +46,16 @@ exports.getDeliveryMethodsById = async (req, res) => {
   }
 };
 
-exports.createDeliveryMethods = async (req, res) => {
+exports.createSize = async (req, res) => {
   try {
     const { name } = req.body;
-    const deliveryMethod = await prisma.deliveryMethods.create({
+    const size = await prisma.sizes.create({
       data: { name },
     });
     return res.status(201).json({
       success: true,
-      message: "deliveryMethod created successfully",
-      results: deliveryMethod,
+      message: "size created successfully",
+      results: size,
     });
   } catch (error) {
     return res.status(500).json({
@@ -65,11 +65,11 @@ exports.createDeliveryMethods = async (req, res) => {
   }
 };
 
-exports.updateDeliveryMethods = async (req, res) => {
+exports.updateSize = async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
   try {
-    const deliveryMethod = await prisma.deliveryMethods.update({
+    const size = await prisma.sizes.update({
       where: { id: parseInt(id) },
       data: {
         name,
@@ -77,17 +77,16 @@ exports.updateDeliveryMethods = async (req, res) => {
     });
     return res.status(201).json({
       success: true,
-      message: `deliveryMethod with id: ${id} updated successfully`,
-      results: deliveryMethod,
+      message: `size with id: ${id} updated successfully`,
+      results: size,
     });
   } catch (error) {
     if (error.code === "P2025") {
       return res.status(404).json({
         success: false,
-        message: `deliveryMethod with id ${id} not found`,
+        message: `Size with id ${id} not found`,
       });
     }
-    console.log(error);
     return res.status(500).json({
       success: false,
       message: `Internal server error`,
@@ -95,22 +94,22 @@ exports.updateDeliveryMethods = async (req, res) => {
   }
 };
 
-exports.deleteDeliveryMethods = async (req, res) => {
+exports.deleteSize = async (req, res) => {
   const { id } = req.params;
   try {
-    const deliveryMethod = await prisma.deliveryMethods.delete({
+    const size = await prisma.sizes.delete({
       where: { id: parseInt(id) },
     });
     return res.status(201).json({
       success: true,
-      message: `deliveryMethod with id: ${id} deleted successfully`,
-      results: deliveryMethod,
+      message: `size with id: ${id} deleted successfully`,
+      results: size,
     });
   } catch (error) {
     if (error.code === "P2025") {
       return res.status(404).json({
         success: false,
-        message: `deliveryMethod with id ${id} not found`,
+        message: `Size with id ${id} not found`,
       });
     }
     return res.status(500).json({

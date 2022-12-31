@@ -2,13 +2,13 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-exports.getAllCategories = async (req, res) => {
+exports.getAllProductCategories = async (req, res) => {
   try {
-    const allCategories = await prisma.categories.findMany();
+    const allProductCategories = await prisma.productCategories.findMany();
     return res.status(200).json({
       success: true,
-      message: "List of categories",
-      results: allCategories,
+      message: "List of Product Categories",
+      results: allProductCategories,
     });
   } catch (error) {
     return res.status(500).json({
@@ -18,24 +18,24 @@ exports.getAllCategories = async (req, res) => {
   }
 };
 
-exports.getCategory = async (req, res) => {
+exports.getProductCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const category = await prisma.categories.findUnique({
+    const productCategory = await prisma.productCategories.findUnique({
       where: {
         id: parseInt(id),
       },
     });
-    if (!category) {
+    if (!productCategory) {
       return res.status(404).json({
         success: false,
-        message: `category with id ${id} not found`,
+        message: `Product Category with id ${id} not found`,
       });
     }
     return res.status(200).json({
       success: true,
-      message: `category with id ${id} found`,
-      results: category,
+      message: `Product Category with id ${id} found`,
+      results: productCategory,
     });
   } catch (error) {
     return res.status(500).json({
@@ -45,17 +45,18 @@ exports.getCategory = async (req, res) => {
   }
 };
 
-exports.createCategory = async (req, res) => {
+exports.createProductCategory = async (req, res) => {
   try {
-    const { name } = req.body;
-    const category = await prisma.categories.create({
+    const { productId, categoryId } = req.body;
+    const category = await prisma.productCategories.create({
       data: {
-        name,
+        productId: parseInt(productId),
+        categoryId: parseInt(categoryId),
       },
     });
     return res.status(201).json({
       success: true,
-      message: "Category created successfully",
+      message: "Product Category created successfully",
       results: category,
     });
   } catch (error) {
@@ -66,29 +67,30 @@ exports.createCategory = async (req, res) => {
   }
 };
 
-exports.updateCategory = async (req, res) => {
+exports.updateProductCategory = async (req, res) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const { productId, categoryId } = req.body;
   try {
-    const category = await prisma.categories.update({
+    const productCategory = await prisma.productCategories.update({
       where: {
         id: parseInt(id),
       },
       data: {
-        name,
+        productId: parseInt(productId),
+        categoryId: parseInt(categoryId),
       },
     });
     return res.status(200).json({
       success: true,
-      message: `Category with id ${id} updated successfully`,
-      results: category,
+      message: `Product Category with id ${id} updated successfully`,
+      results: productCategory,
     });
   } catch (error) {
     console.log(error);
     if (error.code === "P2025") {
       return res.status(404).json({
         success: false,
-        message: `Category with id ${id} not found`,
+        message: `Product Category with id ${id} not found`,
       });
     }
     return res.status(500).json({
@@ -98,24 +100,24 @@ exports.updateCategory = async (req, res) => {
   }
 };
 
-exports.deleteCategory = async (req, res) => {
+exports.deleteProductCategory = async (req, res) => {
   const { id } = req.params;
   try {
-    const category = await prisma.categories.delete({
+    const productCategory = await prisma.productCategories.delete({
       where: {
         id: parseInt(id),
       },
     });
     return res.status(200).json({
       success: true,
-      message: `Category with id ${id} deleted successfully`,
-      results: category,
+      message: `Product Category with id ${id} deleted successfully`,
+      results: productCategory,
     });
   } catch (error) {
     if (error.code === "P2025") {
       return res.status(404).json({
         success: false,
-        message: `Category with id ${id} not found`,
+        message: `Product Category with id ${id} not found`,
       });
     }
     return res.status(500).json({

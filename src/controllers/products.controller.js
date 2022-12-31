@@ -2,13 +2,13 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-exports.getAllCategories = async (req, res) => {
+exports.getAllProducts = async (req, res) => {
   try {
-    const allCategories = await prisma.categories.findMany();
+    const allProducts = await prisma.products.findMany();
     return res.status(200).json({
       success: true,
-      message: "List of categories",
-      results: allCategories,
+      message: "List of products",
+      results: allProducts,
     });
   } catch (error) {
     return res.status(500).json({
@@ -18,24 +18,24 @@ exports.getAllCategories = async (req, res) => {
   }
 };
 
-exports.getCategory = async (req, res) => {
+exports.getProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const category = await prisma.categories.findUnique({
+    const product = await prisma.products.findUnique({
       where: {
         id: parseInt(id),
       },
     });
-    if (!category) {
+    if (!product) {
       return res.status(404).json({
         success: false,
-        message: `category with id ${id} not found`,
+        message: `Product with id ${id} not found`,
       });
     }
     return res.status(200).json({
       success: true,
-      message: `category with id ${id} found`,
-      results: category,
+      message: `Product with id ${id} found`,
+      results: product,
     });
   } catch (error) {
     return res.status(500).json({
@@ -45,20 +45,35 @@ exports.getCategory = async (req, res) => {
   }
 };
 
-exports.createCategory = async (req, res) => {
+exports.createProduct = async (req, res) => {
   try {
-    const { name } = req.body;
-    const category = await prisma.categories.create({
+    const {
+      name,
+      price,
+      description,
+      stock,
+      deliveryStart,
+      deliveryEnd,
+      picture,
+    } = req.body;
+    const product = await prisma.products.create({
       data: {
         name,
+        price: parseInt(price),
+        description,
+        stock: parseInt(stock),
+        deliveryStart: new Date(deliveryStart),
+        deliveryEnd: new Date(deliveryEnd),
+        picture,
       },
     });
     return res.status(201).json({
       success: true,
-      message: "Category created successfully",
-      results: category,
+      message: "Products created successfully",
+      results: product,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -66,29 +81,43 @@ exports.createCategory = async (req, res) => {
   }
 };
 
-exports.updateCategory = async (req, res) => {
+exports.updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const {
+    name,
+    price,
+    description,
+    stock,
+    deliveryStart,
+    deliveryEnd,
+    picture,
+  } = req.body;
   try {
-    const category = await prisma.categories.update({
+    const product = await prisma.products.update({
       where: {
         id: parseInt(id),
       },
       data: {
         name,
+        price: parseInt(price),
+        description,
+        stock: parseInt(stock),
+        deliveryStart: new Date(deliveryStart),
+        deliveryEnd: new Date(deliveryEnd),
+        picture,
       },
     });
     return res.status(200).json({
       success: true,
-      message: `Category with id ${id} updated successfully`,
-      results: category,
+      message: `Product with id ${id} updated successfully`,
+      results: product,
     });
   } catch (error) {
     console.log(error);
     if (error.code === "P2025") {
       return res.status(404).json({
         success: false,
-        message: `Category with id ${id} not found`,
+        message: `Product with id ${id} not found`,
       });
     }
     return res.status(500).json({
@@ -98,24 +127,24 @@ exports.updateCategory = async (req, res) => {
   }
 };
 
-exports.deleteCategory = async (req, res) => {
+exports.deleteProduct = async (req, res) => {
   const { id } = req.params;
   try {
-    const category = await prisma.categories.delete({
+    const product = await prisma.products.delete({
       where: {
         id: parseInt(id),
       },
     });
     return res.status(200).json({
       success: true,
-      message: `Category with id ${id} deleted successfully`,
-      results: category,
+      message: `Product with id ${id} deleted successfully`,
+      results: product,
     });
   } catch (error) {
     if (error.code === "P2025") {
       return res.status(404).json({
         success: false,
-        message: `Category with id ${id} not found`,
+        message: `Product with id ${id} not found`,
       });
     }
     return res.status(500).json({
