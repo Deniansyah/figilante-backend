@@ -50,8 +50,8 @@ exports.getCart = async (req, res) => {
 };
 
 exports.createCarts = async (req, res) => {
+  const {productId, userId, qty, total} = req.body;
   try {
-    const {productId, userId, qty, total} = req.body;
     const carts = await prisma.carts.create({
       data: {
         productId: parseInt(productId),
@@ -66,11 +66,17 @@ exports.createCarts = async (req, res) => {
       results: carts
     })
   } catch (error) {
-    console.log(error.meta.field_name)
-    if(error.code === "P2003" && error.meta.field_name.include("userId")) {
-      res.status(400).json({
+    console.log(error)
+    if(error.code === "P2003" && error.meta.field_name.includes("userId")) {
+      return res.status(400).json({
         success: false,
-        message: "user not exists, please cek user again",
+        message: `user id ${userId} not exists, please cek user again`,
+      });
+    }
+    if(error.code === "P2003" && error.meta.field_name.includes("productId")) {
+      return res.status(400).json({
+        success: false,
+        message: `product id ${productId} not exists, please cek product again`,
       });
     }
     return res.status(500).json({
@@ -81,15 +87,15 @@ exports.createCarts = async (req, res) => {
 };
 
 exports.updateCarts = async (req, res) => {
+  const {id} = req.params;
+  const {productId,
+    userId,
+    qty,
+    total} = req.body;
   try {
-    const {id} = req.params;
-    const {productId,
-      userId,
-      qty,
-      total} = req.body;
     const carts = await prisma.carts.update({
       where: {
-        id: id
+        id: parseInt(id),
       },
       data: {
         productId: parseInt(productId),
@@ -104,11 +110,22 @@ exports.updateCarts = async (req, res) => {
       results: carts
     });
   } catch (error) {
-    console.log(error);
+    if(error.code === "P2003" && error.meta.field_name.includes("userId")) {
+      return res.status(400).json({
+        success: false,
+        message: `user id ${userId} not exists, please cek user again`,
+      });
+    }
+    if(error.code === "P2003" && error.meta.field_name.includes("productId")) {
+      return res.status(400).json({
+        success: false,
+        message: `product id ${productId} not exists, please cek product again`,
+      });
+    }
     if (error.code === "P2025") {
       return res.status(404).json({
         success: false,
-        message: `Chat with id ${id} not found`,
+        message: `Carts with id ${id} not found`,
       });
     }
     return res.status(500).json({
@@ -119,8 +136,8 @@ exports.updateCarts = async (req, res) => {
 }
 
 exports.deleteCarts = async (req, res) => {
+  const {id} = req.params;
   try {
-    const {id} = req.params;
     const carts = await prisma.carts.delete({
       where: {
         id: parseInt(id)
@@ -133,6 +150,7 @@ exports.deleteCarts = async (req, res) => {
     });
   } catch (error) {
     if (error.code === "P2025") {
+      console.log(" hit error 25")
       return res.status(404).json({
         success: false,
         message: `Chat with id ${id} not found`,
