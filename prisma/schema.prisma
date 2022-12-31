@@ -7,139 +7,141 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model cart {
-  id        Int       @id @default(autoincrement())
+model users {
+  id                            Int            @id @default(autoincrement())
+  nickName                      String?        @db.VarChar
+  firstName                     String?        @db.VarChar
+  lastName                      String?        @db.VarChar
+  address                       String?        @db.VarChar
+  email                         String?        @unique @db.VarChar
+  password                      String?        @db.VarChar
+  phoneNumber                   String?        @unique @db.VarChar
+  gender                        String?        @db.VarChar
+  birthdate                     DateTime?      @db.Date
+  picture                       String?        @db.VarChar
+  isAdmin                       String?        @default("false") @db.VarChar
+  createdAt                     DateTime?      @default(now()) @db.Timestamptz(6)
+  updatedAt                     DateTime?      @db.Timestamptz(6)
+  carts                         carts[]
+  chats_chats_formUserIdTousers chats[]        @relation("chats_formUserIdTousers")
+  chats_chats_toUserIdTousers   chats[]        @relation("chats_toUserIdTousers")
+  transactions                  transactions[]
+}
+
+model carts {
+  id        Int       @id(map: "cart_pkey") @default(autoincrement())
   productId Int?
   userId    Int?
   qty       Int?
   total     Int?
   createdAt DateTime? @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime? @db.Timestamptz(6)
-  product   product?  @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  updatedAt DateTime? @default(now()) @db.Timestamptz(6)
+  products  products? @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users     users?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model category {
-  id              Int               @id @default(autoincrement())
-  name            String?           @db.VarChar
-  createdAt       DateTime?         @default(now()) @db.Timestamptz(6)
-  updatedAt       DateTime?         @db.Timestamptz(6)
-  productCategory productCategory[]
+model categories {
+  id                Int                 @id(map: "category_pkey") @default(autoincrement())
+  name              String?             @db.VarChar
+  createdAt         DateTime?           @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime?           @default(now()) @db.Timestamptz(6)
+  productCategories productCategories[]
 }
 
-model chat {
-  id         Int       @id @default(autoincrement())
-  createdAt  DateTime? @default(now()) @db.Timestamptz(6)
-  updatedAt  DateTime? @db.Timestamptz(6)
-  formUserId Int?
-  message    String?
-  toUserId   Int?
-  users      users?    @relation(fields: [formUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model chats {
+  id                            Int       @id(map: "chat_pkey") @default(autoincrement())
+  createdAt                     DateTime? @default(now()) @db.Timestamptz(6)
+  updatedAt                     DateTime? @default(now()) @db.Timestamptz(6)
+  formUserId                    Int?
+  message                       String?
+  toUserId                      Int?
+  users_chats_formUserIdTousers users?    @relation("chats_formUserIdTousers", fields: [formUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_chats_toUserIdTousers   users?    @relation("chats_toUserIdTousers", fields: [toUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model deliveryMethod {
-  id              Int               @id @default(autoincrement())
-  picture         String?           @db.VarChar
-  createdAt       DateTime?         @default(now()) @db.Timestamptz(6)
-  updatedAt       DateTime?         @db.Timestamptz(6)
-  productDelivery productDelivery[]
+model deliveryMethods {
+  id                Int                 @id(map: "deliveryMethod_pkey") @default(autoincrement())
+  name              String?             @db.VarChar
+  createdAt         DateTime?           @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime?           @default(now()) @db.Timestamptz(6)
+  productDeliveries productDeliveries[]
 }
 
-model paymentMethod {
-  id          Int           @id @default(autoincrement())
-  picture     String?       @db.VarChar
-  name        String?       @db.VarChar
-  createdAt   DateTime?     @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime?     @db.Timestamptz(6)
-  transaction transaction[]
+model paymentMethods {
+  id           Int            @id(map: "paymentMethod_pkey") @default(autoincrement())
+  picture      String?        @db.VarChar
+  name         String?        @db.VarChar
+  createdAt    DateTime?      @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime?      @default(now()) @db.Timestamptz(6)
+  transactions transactions[]
 }
 
-model product {
-  id              Int               @id @default(autoincrement())
-  createdAt       DateTime?         @default(now()) @db.Timestamptz(6)
-  updatedAt       DateTime?         @db.Timestamptz(6)
-  name            String?           @db.VarChar
-  price           Int?
-  description     String?
-  stock           Int?
-  deliveryStart   DateTime?         @db.Timestamptz(6)
-  deliveryEnd     DateTime?         @db.Timestamptz(6)
-  picture         String?           @db.VarChar
-  cart            cart[]
-  productCategory productCategory[]
-  productDelivery productDelivery[]
-  productSize     productSize[]
-  transaction     transaction[]
-}
-
-model productCategory {
-  id         Int       @id @default(autoincrement())
+model productCategories {
+  id         Int         @id(map: "productCategory_pkey") @default(autoincrement())
   productId  Int?
   categoryId Int?
-  createdAt  DateTime? @default(now()) @db.Timestamptz(6)
-  updatedAt  DateTime? @db.Timestamptz(6)
-  category   category? @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  product    product?  @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt  DateTime?   @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime?   @default(now()) @db.Timestamptz(6)
+  categories categories? @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  products   products?   @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model productDelivery {
-  id             Int             @id @default(autoincrement())
-  productId      Int?
-  deleveryId     Int?
-  createdAt      DateTime?       @default(now()) @db.Timestamptz(6)
-  updatedAt      DateTime?       @db.Timestamptz(6)
-  deliveryMethod deliveryMethod? @relation(fields: [deleveryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  product        product?        @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model productDeliveries {
+  id              Int              @id(map: "productDelivery_pkey") @default(autoincrement())
+  productId       Int?
+  deleveryId      Int?
+  createdAt       DateTime?        @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime?        @default(now()) @db.Timestamptz(6)
+  deliveryMethods deliveryMethods? @relation(fields: [deleveryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  products        products?        @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model productSize {
-  id        Int       @id @default(autoincrement())
+model productSizes {
+  id        Int       @id(map: "productSize_pkey") @default(autoincrement())
   productId Int?
   sizeId    Int?
   createdAt DateTime? @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime? @db.Timestamptz(6)
-  product   product?  @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  size      size?     @relation(fields: [sizeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  updatedAt DateTime? @default(now()) @db.Timestamptz(6)
+  products  products? @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sizes     sizes?    @relation(fields: [sizeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model size {
-  id          Int           @id @default(autoincrement())
-  name        String?       @db.VarChar
-  createdAt   DateTime?     @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime?     @db.Timestamptz(6)
-  productSize productSize[]
+model products {
+  id                Int                 @id(map: "product_pkey") @default(autoincrement())
+  createdAt         DateTime?           @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime?           @default(now()) @db.Timestamptz(6)
+  name              String?             @db.VarChar
+  price             Int?
+  description       String?
+  stock             Int?
+  deliveryStart     DateTime?           @db.Timestamptz(6)
+  deliveryEnd       DateTime?           @db.Timestamptz(6)
+  picture           String?             @db.VarChar
+  carts             carts[]
+  productCategories productCategories[]
+  productDeliveries productDeliveries[]
+  productSizes      productSizes[]
+  transactions      transactions[]
 }
 
-model transaction {
-  id            Int            @id @default(autoincrement())
-  userId        Int?
-  productId     Int?
-  qty           Int?
-  total         Int?
-  paymentId     Int?
-  createdAt     DateTime?      @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime?      @db.Timestamptz(6)
-  paymentMethod paymentMethod? @relation(fields: [paymentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  product       product?       @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  users         users?         @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model sizes {
+  id           Int            @id(map: "size_pkey") @default(autoincrement())
+  name         String?        @db.VarChar
+  createdAt    DateTime?      @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime?      @db.Timestamptz(6)
+  productSizes productSizes[]
 }
 
-model users {
-  id          Int           @id @default(autoincrement())
-  nickName    String?       @db.VarChar
-  firstName   String?       @db.VarChar
-  lastName    String?       @db.VarChar
-  address     String?       @db.VarChar
-  email       String?       @unique @db.VarChar
-  password    String?       @db.VarChar
-  phoneNumber String?       @unique @db.VarChar
-  gender      String?       @db.VarChar
-  birthdate   DateTime?     @db.Date
-  picture     String?       @db.VarChar
-  isAdmin     String?       @default("false") @db.VarChar
-  createdAt   DateTime?     @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime?     @db.Timestamptz(6)
-  cart        cart[]
-  chat        chat[]
-  transaction transaction[]
+model transactions {
+  id             Int             @id(map: "transaction_pkey") @default(autoincrement())
+  userId         Int?
+  productId      Int?
+  qty            Int?
+  total          Int?
+  paymentId      Int?
+  createdAt      DateTime?       @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime?       @default(now()) @db.Timestamptz(6)
+  paymentMethods paymentMethods? @relation(fields: [paymentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  products       products?       @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users          users?          @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
