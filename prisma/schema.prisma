@@ -128,7 +128,7 @@ model sizes {
   id           Int            @id(map: "size_pkey") @default(autoincrement())
   name         String?        @db.VarChar
   createdAt    DateTime?      @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime?      @db.Timestamptz(6)
+  updatedAt    DateTime?      @default(now()) @db.Timestamptz(6)
   productSizes productSizes[]
 }
 
