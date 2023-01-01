@@ -94,7 +94,7 @@ exports.forgotPassword = async (req, res) => {
         message: `Account not found`,
       });
     }
-    const code = Math.floor(Math.random() * 90000) + 10000
+    const code = Math.floor(Math.random() * 90000) + 10000;
     await prisma.resetPasswords.create({
       data: {
         userId: parseInt(forgotPassword.id),
@@ -118,15 +118,20 @@ exports.resetPassword = async (req, res) => {
   try {
     const { email, code, newPassword, confirmNewPassword } = req.body;
     const resetPassword = await prisma.resetPasswords.findUnique({
-      where : {
+      where: {
         email: email,
-        code: code,
-      }
-    })
+      },
+    });
     if (!resetPassword) {
       return res.status(404).json({
         success: false,
         message: `Account not found`,
+      });
+    }
+    if (resetPassword.code !== code) {
+      return res.status(400).json({
+        success: false,
+        message: "Code is not valid",
       });
     }
     if (newPassword !== confirmNewPassword) {
@@ -141,9 +146,9 @@ exports.resetPassword = async (req, res) => {
         email: email,
       },
       data: {
-        password: passwordHashed
-      }
-    })
+        password: passwordHashed,
+      },
+    });
     if (!updatePassword) {
       return res.status(400).json({
         success: false,
@@ -153,14 +158,14 @@ exports.resetPassword = async (req, res) => {
     await prisma.resetPasswords.delete({
       where: {
         email: email,
-        code: code,
-      }
-    })
+      },
+    });
     return res.status(201).json({
       success: true,
       message: "Password has been updated",
-    })
+    });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",

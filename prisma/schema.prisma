@@ -25,7 +25,7 @@ model users {
   carts                                       carts[]
   chats_chats_fromUserIdTousers               chats[]          @relation("chats_fromUserIdTousers")
   chats_chats_toUserIdTousers                 chats[]          @relation("chats_toUserIdTousers")
-  resetPasswords_resetPasswords_emailTousers  resetPasswords[] @relation("resetPasswords_emailTousers")
+  resetPasswords_resetPasswords_emailTousers  resetPasswords?  @relation("resetPasswords_emailTousers")
   resetPasswords_resetPasswords_userIdTousers resetPasswords[] @relation("resetPasswords_userIdTousers")
   transactions                                transactions[]
 }
@@ -151,7 +151,7 @@ model transactions {
 model resetPasswords {
   id                                 Int       @id @default(autoincrement())
   userId                             Int?
-  email                              String?   @db.VarChar
+  email                              String?   @unique @db.VarChar
   code                               String?   @db.VarChar
   createdAt                          DateTime? @default(now()) @db.Timestamptz(6)
   updatedAt                          DateTime? @default(now()) @db.Timestamptz(6)
