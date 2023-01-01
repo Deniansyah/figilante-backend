@@ -8,24 +8,26 @@ datasource db {
 }
 
 model users {
-  id                            Int            @id @default(autoincrement())
-  nickName                      String?        @db.VarChar
-  firstName                     String?        @db.VarChar
-  lastName                      String?        @db.VarChar
-  address                       String?        @db.VarChar
-  email                         String?        @unique @db.VarChar
-  password                      String?        @db.VarChar
-  phoneNumber                   String?        @unique @db.VarChar
-  gender                        String?        @db.VarChar
-  birthdate                     DateTime?      @db.Date
-  picture                       String?        @db.VarChar
-  isAdmin                       String?        @default("false") @db.VarChar
-  createdAt                     DateTime?      @default(now()) @db.Timestamptz(6)
-  updatedAt                     DateTime?      @db.Timestamptz(6)
-  carts                         carts[]
-  chats_chats_fromUserIdTousers chats[]        @relation("chats_fromUserIdTousers")
-  chats_chats_toUserIdTousers   chats[]        @relation("chats_toUserIdTousers")
-  transactions                  transactions[]
+  id                                          Int              @id @default(autoincrement())
+  nickName                                    String?          @db.VarChar
+  firstName                                   String?          @db.VarChar
+  lastName                                    String?          @db.VarChar
+  address                                     String?          @db.VarChar
+  email                                       String?          @unique @db.VarChar
+  password                                    String?          @db.VarChar
+  phoneNumber                                 String?          @unique @db.VarChar
+  gender                                      String?          @db.VarChar
+  birthdate                                   DateTime?        @db.Date
+  picture                                     String?          @db.VarChar
+  isAdmin                                     String?          @default("false") @db.VarChar
+  createdAt                                   DateTime?        @default(now()) @db.Timestamptz(6)
+  updatedAt                                   DateTime?        @db.Timestamptz(6)
+  carts                                       carts[]
+  chats_chats_fromUserIdTousers               chats[]          @relation("chats_fromUserIdTousers")
+  chats_chats_toUserIdTousers                 chats[]          @relation("chats_toUserIdTousers")
+  resetPasswords_resetPasswords_emailTousers  resetPasswords[] @relation("resetPasswords_emailTousers")
+  resetPasswords_resetPasswords_userIdTousers resetPasswords[] @relation("resetPasswords_userIdTousers")
+  transactions                                transactions[]
 }
 
 model carts {
@@ -144,4 +146,15 @@ model transactions {
   paymentMethods paymentMethods? @relation(fields: [paymentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   products       products?       @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users          users?          @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model resetPasswords {
+  id                                 Int       @id @default(autoincrement())
+  userId                             Int?
+  email                              String?   @db.VarChar
+  code                               String?   @db.VarChar
+  createdAt                          DateTime? @default(now()) @db.Timestamptz(6)
+  updatedAt                          DateTime? @default(now()) @db.Timestamptz(6)
+  users_resetPasswords_emailTousers  users?    @relation("resetPasswords_emailTousers", fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction)
+  users_resetPasswords_userIdTousers users?    @relation("resetPasswords_userIdTousers", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

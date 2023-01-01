@@ -54,7 +54,7 @@ exports.login = async (req, res) => {
     if (!login) {
       return res.status(404).json({
         success: false,
-        message: `Acount not registered`,
+        message: `Account not registered`,
       });
     }
     if (await argon.verify(login.password, password)) {
@@ -72,6 +72,94 @@ exports.login = async (req, res) => {
         message: "Wrong email or password",
       });
     }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const forgotPassword = await prisma.users.findUnique({
+      where: {
+        email: email,
+      },
+    });
+    if (!forgotPassword) {
+      return res.status(404).json({
+        success: false,
+        message: `Account not found`,
+      });
+    }
+    const code = Math.floor(Math.random() * 90000) + 10000
+    await prisma.resetPasswords.create({
+      data: {
+        userId: parseInt(forgotPassword.id),
+        email: forgotPassword.email,
+        code: code.toString(),
+      },
+    });
+    return res.status(201).json({
+      success: true,
+      message: "Password reset code has been sent to your email",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { email, code, newPassword, confirmNewPassword } = req.body;
+    const resetPassword = await prisma.resetPasswords.findUnique({
+      where : {
+        email: email,
+        code: code,
+      }
+    })
+    if (!resetPassword) {
+      return res.status(404).json({
+        success: false,
+        message: `Account not found`,
+      });
+    }
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password and confirm new password do not match",
+      });
+    }
+    const passwordHashed = await argon.hash(newPassword);
+    const updatePassword = await prisma.users.update({
+      where: {
+        email: email,
+      },
+      data: {
+        password: passwordHashed
+      }
+    })
+    if (!updatePassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to update password",
+      });
+    }
+    await prisma.resetPasswords.delete({
+      where: {
+        email: email,
+        code: code,
+      }
+    })
+    return res.status(201).json({
+      success: true,
+      message: "Password has been updated",
+    })
   } catch (error) {
     return res.status(500).json({
       success: false,

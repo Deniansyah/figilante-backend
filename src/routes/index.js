@@ -1,15 +1,16 @@
 const routers = require("express").Router();
+const { auth } = require("../middlewares/auth.middleware");
 
-routers.use("/users", require("./users.router"));
-routers.use("/deliveryMethods", require("./deliveryMethods.router.js"));
-routers.use("/chats", require("./chats.router"));
-routers.use("/carts", require("./carts.router"));
-routers.use("/sizes", require("./sizes.router"));
-routers.use("/categories", require("./categories.router"));
-routers.use("/products", require("./products.router"));
-routers.use("/productCategories", require("./productCategories.router"));
-routers.use("/productSizes", require("./productSizes.router"));
-routers.use("/paymentMethods", require("./paymentMethods.router"));
+routers.use("/users", auth, require("./users.router"));
+routers.use("/deliveryMethods", auth, require("./deliveryMethods.router.js"));
+routers.use("/chats", auth, require("./chats.router"));
+routers.use("/carts", auth, require("./carts.router"));
+routers.use("/sizes", auth, require("./sizes.router"));
+routers.use("/categories", auth, require("./categories.router"));
+routers.use("/products", auth, require("./products.router"));
+routers.use("/productCategories", auth, require("./productCategories.router"));
+routers.use("/productSizes", auth, require("./productSizes.router"));
+routers.use("/paymentMethods", auth, require("./paymentMethods.router"));
 
 routers.use("/auth", require("./auth.router"));
 
