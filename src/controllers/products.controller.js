@@ -25,6 +25,34 @@ exports.getProduct = async (req, res) => {
       where: {
         id: parseInt(id),
       },
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        description: true,
+        stock: true,
+        deliveryStart: true,
+        deliveryEnd: true,
+        picture: true,
+        productSizes: {
+          select: {
+            sizes: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        productDeliveries: {
+          select: {
+            deliveryMethods: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
     if (!product) {
       return res.status(404).json({

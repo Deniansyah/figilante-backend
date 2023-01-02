@@ -91,10 +91,10 @@ model productCategories {
 model productDeliveries {
   id              Int              @id(map: "productDelivery_pkey") @default(autoincrement())
   productId       Int?
-  deleveryId      Int?
+  deliveryId      Int?
   createdAt       DateTime?        @default(now()) @db.Timestamptz(6)
   updatedAt       DateTime?        @default(now()) @db.Timestamptz(6)
-  deliveryMethods deliveryMethods? @relation(fields: [deleveryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  deliveryMethods deliveryMethods? @relation(fields: [deliveryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   products        products?        @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
