@@ -46,12 +46,14 @@ exports.getProductDelivery = async (req, res) => {
 };
 
 exports.createProductDeliveries = async (req, res) => {
-  const {productId, deleveryId} = req.body;
+  const {productId, deliveryId} = req.body;
+  console.log(productId)
+  console.log(deliveryId)
   try {
     const productDeliveries = await prisma.productDeliveries.create({
       data: {
         productId: parseInt(productId),
-        deleveryId: parseInt(deleveryId),
+        deliveryId: parseInt(deliveryId),
       }
     })
     return res.status(200).json({
@@ -60,10 +62,10 @@ exports.createProductDeliveries = async (req, res) => {
       results: productDeliveries
     })
   } catch (error) {
-    if(error.code === "P2003" && error.meta.field_name.includes("deleveryId")) {
+    if(error.code === "P2003" && error.meta.field_name.includes("deliveryId")) {
       return res.status(400).json({
         success: false,
-        message: `user id ${deleveryId} not exists, please cek user again`,
+        message: `user id ${deliveryId} not exists, please cek user again`,
       });
     }
     if(error.code === "P2003" && error.meta.field_name.includes("productId")) {
@@ -81,7 +83,7 @@ exports.createProductDeliveries = async (req, res) => {
 
 exports.updateProductDeliveries = async (req, res) => {
   const {id} = req.params;
-  const {productId, deleveryId} = req.body;
+  const {productId, deliveryId} = req.body;
   try {
     const productDeliveries = await prisma.productDeliveries.update({
       where: {
@@ -89,7 +91,7 @@ exports.updateProductDeliveries = async (req, res) => {
       },
       data: {
         productId: parseInt(productId),
-        deleveryId: parseInt(deleveryId),
+        deliveryId: parseInt(deliveryId),
       }
     });
     return res.status(201).json({
@@ -98,10 +100,10 @@ exports.updateProductDeliveries = async (req, res) => {
       results: productDeliveries
     });
   } catch (error) {
-    if(error.code === "P2003" && error.meta.field_name.includes("deleveryId")) {
+    if(error.code === "P2003" && error.meta.field_name.includes("deliveryId")) {
       return res.status(400).json({
         success: false,
-        message: `user id ${deleveryId} not exists, please cek user again`,
+        message: `user id ${deliveryId} not exists, please cek user again`,
       });
     }
     if(error.code === "P2003" && error.meta.field_name.includes("productId")) {
