@@ -13,5 +13,6 @@ routers.use("/productSizes", auth, require("./productSizes.router"));
 routers.use("/paymentMethods", auth, require("./paymentMethods.router"));
 
 routers.use("/auth", require("./auth.router"));
+routers.use("/profile", auth, require("./profile.router"));
 
 module.exports = routers;

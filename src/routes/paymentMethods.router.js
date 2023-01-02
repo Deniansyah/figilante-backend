@@ -7,11 +7,12 @@ const {
   updatePaymentMethod,
   deletePaymentMethod,
 } = require("../controllers/paymentMethods.controller");
+const upload = require("../middlewares/upload.middleware");
 
 paymentMethodsController.get("/", getPaymentMethods);
 paymentMethodsController.get("/:id", getPaymentMethod);
-paymentMethodsController.post("/", createPaymentMethod);
-paymentMethodsController.patch("/:id", updatePaymentMethod);
+paymentMethodsController.post("/", upload, createPaymentMethod);
+paymentMethodsController.patch("/:id", upload, updatePaymentMethod);
 paymentMethodsController.delete("/:id", deletePaymentMethod);
 
 module.exports = paymentMethodsController;

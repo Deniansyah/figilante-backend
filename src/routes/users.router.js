@@ -6,11 +6,12 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/users.controller");
+const upload = require("../middlewares/upload.middleware");
 
 usersRoutes.get("/", getUsers);
 usersRoutes.get("/:id", getUser);
-usersRoutes.post("/", createUser);
-usersRoutes.patch("/:id", updateUser);
+usersRoutes.post("/", upload, createUser);
+usersRoutes.patch("/:id", upload, updateUser);
 usersRoutes.delete("/:id", deleteUser);
 
 module.exports = usersRoutes;
