@@ -16,27 +16,27 @@ exports.getProductDeliveries = async (req, res) => {
       message: "Internal server error",
     });
   }
-}
+};
 
 exports.getProductDelivery = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
   try {
     const productDeliveries = await prisma.productDeliveries.findUnique({
       where: {
-        id: parseInt(id)
+        id: parseInt(id),
       },
     });
-    if(!productDeliveries){
+    if (!productDeliveries) {
       return res.status(404).json({
         success: false,
-        message: `ProductDeliveries with ${id} not found`
-      })
-    };
+        message: `ProductDeliveries with ${id} not found`,
+      });
+    }
     return res.status(200).json({
       success: true,
       message: `ProductDeliveries with ${id} found`,
-      results: productDeliveries
-    })
+      results: productDeliveries,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -46,29 +46,30 @@ exports.getProductDelivery = async (req, res) => {
 };
 
 exports.createProductDeliveries = async (req, res) => {
-  const {productId, deliveryId} = req.body;
-  console.log(productId)
-  console.log(deliveryId)
+  const { productId, deliveryId } = req.body;
   try {
     const productDeliveries = await prisma.productDeliveries.create({
       data: {
         productId: parseInt(productId),
         deliveryId: parseInt(deliveryId),
-      }
-    })
+      },
+    });
     return res.status(200).json({
       success: true,
       message: "Chat created successfully",
-      results: productDeliveries
-    })
+      results: productDeliveries,
+    });
   } catch (error) {
-    if(error.code === "P2003" && error.meta.field_name.includes("deliveryId")) {
+    if (
+      error.code === "P2003" &&
+      error.meta.field_name.includes("deliveryId")
+    ) {
       return res.status(400).json({
         success: false,
         message: `user id ${deliveryId} not exists, please cek user again`,
       });
     }
-    if(error.code === "P2003" && error.meta.field_name.includes("productId")) {
+    if (error.code === "P2003" && error.meta.field_name.includes("productId")) {
       return res.status(400).json({
         success: false,
         message: `product id ${productId} not exists, please cek product again`,
@@ -82,8 +83,8 @@ exports.createProductDeliveries = async (req, res) => {
 };
 
 exports.updateProductDeliveries = async (req, res) => {
-  const {id} = req.params;
-  const {productId, deliveryId} = req.body;
+  const { id } = req.params;
+  const { productId, deliveryId } = req.body;
   try {
     const productDeliveries = await prisma.productDeliveries.update({
       where: {
@@ -91,22 +92,24 @@ exports.updateProductDeliveries = async (req, res) => {
       },
       data: {
         productId: parseInt(productId),
-        deliveryId: parseInt(deliveryId),
-      }
+      },
     });
     return res.status(201).json({
       success: true,
       message: `ProductDeliveries with id ${id} updated successfully`,
-      results: productDeliveries
+      results: productDeliveries,
     });
   } catch (error) {
-    if(error.code === "P2003" && error.meta.field_name.includes("deliveryId")) {
+    if (
+      error.code === "P2003" &&
+      error.meta.field_name.includes("deliveryId")
+    ) {
       return res.status(400).json({
         success: false,
         message: `user id ${deliveryId} not exists, please cek user again`,
       });
     }
-    if(error.code === "P2003" && error.meta.field_name.includes("productId")) {
+    if (error.code === "P2003" && error.meta.field_name.includes("productId")) {
       return res.status(400).json({
         success: false,
         message: `product id ${productId} not exists, please cek product again`,
@@ -123,20 +126,20 @@ exports.updateProductDeliveries = async (req, res) => {
       message: "Internal server error",
     });
   }
-}
+};
 
 exports.deleteProductDeliveries = async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   try {
     const productDeliveries = await prisma.productDeliveries.delete({
       where: {
-        id: parseInt(id)
-      }
+        id: parseInt(id),
+      },
     });
     return res.status(200).json({
       success: true,
       message: `ProductDeliveries with id ${id} deleted successfully`,
-      results: productDeliveries
+      results: productDeliveries,
     });
   } catch (error) {
     if (error.code === "P2025") {
@@ -150,4 +153,4 @@ exports.deleteProductDeliveries = async (req, res) => {
       message: "Internal server error",
     });
   }
-}
+};
