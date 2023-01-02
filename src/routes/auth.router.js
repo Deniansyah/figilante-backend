@@ -1,9 +1,25 @@
 const registerRouter = require("express").Router();
-const { register, login, forgotPassword, resetPassword } = require("../controllers/auth.controller");
+const {
+  register,
+  login,
+  forgotPassword,
+  resetPassword,
+} = require("../controllers/auth.controller");
+const { validate, rules } = require("../middlewares/validator.middleware");
 
-registerRouter.post("/register", register);
-registerRouter.post("/login", login);
-registerRouter.post("/forgot-password", forgotPassword);
-registerRouter.post("/reset-password", resetPassword);
+registerRouter.post("/register", rules("register"), validate, register);
+registerRouter.post("/login", rules("login"), validate, login);
+registerRouter.post(
+  "/forgot-password",
+  rules("forgotPassword"),
+  validate,
+  forgotPassword
+);
+registerRouter.post(
+  "/reset-password",
+  rules("resetPassword"),
+  validate,
+  resetPassword
+);
 
 module.exports = registerRouter;
