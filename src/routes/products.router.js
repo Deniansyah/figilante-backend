@@ -6,9 +6,11 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  getProductsCust,
 } = require("../controllers/products.controller");
 
-productsController.get("/", getAllProducts);
+productsController.get("/", getProductsCust);
+productsController.get("/all", getAllProducts);
 productsController.get("/:id", getProduct);
 productsController.post("/", createProduct);
 productsController.patch("/:id", updateProduct);

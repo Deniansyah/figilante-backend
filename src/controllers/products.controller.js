@@ -153,3 +153,40 @@ exports.deleteProduct = async (req, res) => {
     });
   }
 };
+
+exports.getProductsCust = async (req, res) => {
+  req.query.menu = req.query.menu || "Favorite";
+  req.query.limit = parseInt(req.query.limit) || 12;
+  req.query.page = parseInt(req.query.page) || 1;
+  try {
+    const allProducts = await prisma.products.findMany({
+      take: req.query.limit,
+      skip: (req.query.page - 1) * req.query.limit,
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        picture: true,
+      },
+      where: {
+        productCategories: {
+          some: {
+            categories: {
+              name: req.query.menu,
+            },
+          },
+        },
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: "List of products",
+      results: allProducts,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
