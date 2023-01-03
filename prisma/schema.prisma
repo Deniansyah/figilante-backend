@@ -67,15 +67,15 @@ model deliveryMethods {
   createdAt         DateTime?           @default(now()) @db.Timestamptz(6)
   updatedAt         DateTime?           @default(now()) @db.Timestamptz(6)
   productDeliveries productDeliveries[]
+  transactions      transactions[]
 }
 
 model paymentMethods {
-  id           Int            @id(map: "paymentMethod_pkey") @default(autoincrement())
-  picture      String?        @db.VarChar
-  name         String?        @db.VarChar
-  createdAt    DateTime?      @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime?      @default(now()) @db.Timestamptz(6)
-  transactions transactions[]
+  id        Int       @id(map: "paymentMethod_pkey") @default(autoincrement())
+  picture   String?   @db.VarChar
+  name      String?   @db.VarChar
+  createdAt DateTime? @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime? @default(now()) @db.Timestamptz(6)
 }
 
 model productCategories {
@@ -135,17 +135,15 @@ model sizes {
 }
 
 model transactions {
-  id             Int             @id(map: "transaction_pkey") @default(autoincrement())
-  userId         Int?
-  productId      Int?
-  qty            Int?
-  total          Int?
-  paymentId      Int?
-  createdAt      DateTime?       @default(now()) @db.Timestamptz(6)
-  updatedAt      DateTime?       @default(now()) @db.Timestamptz(6)
-  paymentMethods paymentMethods? @relation(fields: [paymentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  products       products?       @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  users          users?          @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id               Int              @id(map: "transaction_pkey") @default(autoincrement())
+  userId           Int?
+  productId        Int?
+  createdAt        DateTime?        @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime?        @default(now()) @db.Timestamptz(6)
+  deliveryMethodId Int?
+  deliveryMethods  deliveryMethods? @relation(fields: [deliveryMethodId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  products         products?        @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users            users?           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model resetPasswords {
