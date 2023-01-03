@@ -38,7 +38,6 @@ exports.getAllTransactions = async (req, res) => {
       results: transactions,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
