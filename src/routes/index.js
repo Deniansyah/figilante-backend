@@ -12,6 +12,7 @@ routers.use("/productCategories", auth, require("./productCategories.router"));
 routers.use("/productSizes", auth, require("./productSizes.router"));
 routers.use("/paymentMethods", auth, require("./paymentMethods.router"));
 routers.use("/productDeliveries", auth, require("./productDeliveries.router"));
+routers.use("/transactions", auth, require("./transactions.router"));
 
 routers.use("/auth", require("./auth.router"));
 routers.use("/profile", auth, require("./profile.router"));
