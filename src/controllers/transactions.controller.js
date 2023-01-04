@@ -46,27 +46,10 @@ exports.getAllTransactions = async (req, res) => {
 };
 
 exports.createTransactions = async (req, res) => {
-  const authorization = req.headers.authorization;
-  const token = authorization.split(" ")[1];
-  const { id } = jwt.verify(token, process.env.SECRET);
-
   try {
-    // const dataProduct = [
-    //   {
-    //     userId: parseInt(id),
-    //     productId: 1,
-    //     deliveryMethodId: 3,
-    //   },
-    //   {
-    //     userId: parseInt(id),
-    //     productId: 4,
-    //     deliveryMethodId: 3,
-    //   },
-    // ];
-
-    const { data } = req.body;
+    const data = req.body;
     const transaction = await prisma.transactions.createMany({
-      data: [...data],
+      data: data,
     });
     return res.status(201).json({
       success: true,

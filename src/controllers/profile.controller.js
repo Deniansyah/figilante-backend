@@ -138,7 +138,7 @@ exports.uploadProfilePicture = async (req, res) => {
       message: "Internal server error",
     });
   }
-}
+};
 
 exports.changePassword = async (req, res) => {
   const authorization = req.headers.authorization;
