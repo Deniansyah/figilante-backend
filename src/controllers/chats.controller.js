@@ -140,7 +140,14 @@ exports.getChatByUser = async (req, res) => {
   try {
     const chat = await prisma.chats.findMany({
       where: {
-        fromUserId: parseInt(id),
+        OR: [
+          {
+            fromUserId: parseInt(id),
+          },
+          {
+            toUserId: parseInt(id),
+          },
+        ],
       },
     });
     return res.status(200).json({
@@ -150,6 +157,26 @@ exports.getChatByUser = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.AdminList = async (req, res) => {
+  try {
+    const admins = await prisma.users.findMany({
+      where: {
+        isAdmin: "true",
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: "List of admins",
+      results: admins,
+    });
+  } catch (error) {
     return res.status(500).json({
       success: false,
       message: "Internal server error",

@@ -1,5 +1,4 @@
 const { PrismaClient } = require("@prisma/client");
-const { parse } = require("pg-protocol");
 
 const prisma = new PrismaClient();
 
