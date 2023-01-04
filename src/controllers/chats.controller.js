@@ -48,7 +48,7 @@ exports.getChat = async (req, res) => {
 exports.createChat = async (req, res) => {
   const authorization = req.headers.authorization;
   const token = authorization.split(" ")[1];
-  const { id } = jwt.verify(token, "backend-secret");
+  const { id } = jwt.verify(token, process.env.SECRET);
   try {
     const { toUserId, message } = req.body;
     const chat = await prisma.chats.create({

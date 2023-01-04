@@ -6,7 +6,7 @@ const argon = require("argon2");
 exports.getProfile = async (req, res) => {
   const authorization = req.headers.authorization;
   const token = authorization.split(" ")[1];
-  const { id } = jwt.verify(token, "backend-secret");
+  const { id } = jwt.verify(token, process.env.SECRET);
   try {
     const profile = await prisma.users.findUnique({
       where: {
@@ -51,7 +51,7 @@ exports.updateProfile = async (req, res) => {
   }
   const authorization = req.headers.authorization;
   const token = authorization.split(" ")[1];
-  const { id } = jwt.verify(token, "backend-secret");
+  const { id } = jwt.verify(token, process.env.SECRET);
   try {
     const {
       nickName,
@@ -102,7 +102,7 @@ exports.updateProfile = async (req, res) => {
 exports.changePassword = async (req, res) => {
   const authorization = req.headers.authorization;
   const token = authorization.split(" ")[1];
-  const { id } = jwt.verify(token, "backend-secret");
+  const { id } = jwt.verify(token, process.env.SECRET);
   const { oldPassword, newPassword, confirmNewPassword } = req.body;
   try {
     const changePassword = await prisma.users.findUnique({

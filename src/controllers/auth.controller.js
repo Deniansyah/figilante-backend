@@ -15,7 +15,7 @@ exports.register = async (req, res) => {
         phoneNumber,
       },
     });
-    const token = jwt.sign({ id: register.id }, "backend-secret");
+    const token = jwt.sign({ id: register.id }, process.env.SECRET);
     res.status(201).json({
       success: true,
       message: "Register successfully",
@@ -58,7 +58,7 @@ exports.login = async (req, res) => {
       });
     }
     if (await argon.verify(login.password, password)) {
-      const token = jwt.sign({ id: login.id }, "backend-secret");
+      const token = jwt.sign({ id: login.id }, process.env.SECRET);
       res.status(201).json({
         success: true,
         message: "Login successfully",
