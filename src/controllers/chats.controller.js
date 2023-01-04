@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const jwt = require("jsonwebtoken");
 
 const prisma = new PrismaClient();
 
@@ -125,6 +126,30 @@ exports.deleteChat = async (req, res) => {
         message: `Chat with id ${id} not found`,
       });
     }
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.getChatByUser = async (req, res) => {
+  const authorization = req.headers.authorization;
+  const token = authorization.split(" ")[1];
+  const { id } = jwt.verify(token, process.env.SECRET);
+  try {
+    const chat = await prisma.chats.findMany({
+      where: {
+        fromUserId: parseInt(id),
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: `Chat with user id ${id} found`,
+      results: chat,
+    });
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
