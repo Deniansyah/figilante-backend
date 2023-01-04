@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 exports.getAllTransactions = async (req, res) => {
   const authorization = req.headers.authorization;
   const token = authorization.split(" ")[1];
-  const { id } = jwt.verify(token, "backend-secret");
+  const { id } = jwt.verify(token, process.env.SECRET);
   try {
     const transactions = await prisma.transactions.findMany({
       where: {
@@ -48,7 +48,7 @@ exports.getAllTransactions = async (req, res) => {
 exports.createTransactions = async (req, res) => {
   const authorization = req.headers.authorization;
   const token = authorization.split(" ")[1];
-  const { id } = jwt.verify(token, "backend-secret");
+  const { id } = jwt.verify(token, process.env.SECRET);
 
   try {
     const { productId, deliveryMethodId } = req.body;
