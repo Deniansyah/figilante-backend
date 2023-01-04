@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const argon = require("argon2");
+const cloudinary = require("cloudinary").v2;
 
 exports.getProfile = async (req, res) => {
   const authorization = req.headers.authorization;
@@ -46,12 +47,24 @@ exports.getProfile = async (req, res) => {
 };
 
 exports.updateProfile = async (req, res) => {
-  if (req.file) {
-    req.body.picture = req.file.filename;
-  }
   const authorization = req.headers.authorization;
   const token = authorization.split(" ")[1];
   const { id } = jwt.verify(token, process.env.SECRET);
+
+  if (req.file) {
+    req.body.picture = req.file.path;
+    const user = await prisma.users.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    if (user?.picture) {
+      const fileName = user?.picture?.split("/").pop()?.split(".")[0];
+
+      cloudinary.uploader.destroy(`figilante-coffee/${fileName}`);
+    }
+  }
+
   try {
     const {
       nickName,
