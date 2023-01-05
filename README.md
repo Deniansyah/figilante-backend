@@ -8,7 +8,7 @@
 
 
 ##  Description
-Backend application Figilante Coffee App for Repo **ffs-frontend**
+Backend application Figilante Coffee App for Repo **figilante-backend**
 
 ## Built With
 ![Express](https://img.shields.io/badge/Express-v4.18.2-pink?style=flat)
