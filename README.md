@@ -51,7 +51,7 @@ Backend application Figilante Coffee App for Repo **figilante-backend**
 -   Clone the repo.
 
     ```bash
-    git clone https://github.com/madiajijah11/figilante-backend.git
+    git clone https://github.com/filwathan/figilante-backend.git
     ```
 
     ```bash
@@ -68,7 +68,7 @@ Backend application Figilante Coffee App for Repo **figilante-backend**
     Set up your ENV
 
      ```bash
-    npx prisma db pull (when you already have databases like PostgreSQL) && npx prisma generate
+    npx prisma db pull (when you already have databases using PostgreSQL or other RDBMS) && npx prisma generate
     npm run dev
     ```
 
