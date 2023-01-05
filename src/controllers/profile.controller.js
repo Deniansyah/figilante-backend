@@ -75,6 +75,17 @@ exports.updateProfile = async (req, res) => {
         gender,
         birthdate: new Date(birthdate),
       },
+      select: {
+        id: true,
+        nickName: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phoneNumber: true,
+        address: true,
+        gender: true,
+        birthdate: true,
+      }
     });
     if (!updateProfile) {
       return res.status(404).json({
@@ -120,6 +131,10 @@ exports.uploadProfilePicture = async (req, res) => {
       data: {
         picture,
       },
+      select: {
+        id: true,
+        picture: true,
+      }
     });
     if (!updateProfilePicture) {
       return res.status(404).json({
