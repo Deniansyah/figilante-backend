@@ -1,29 +1,29 @@
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 exports.getAllProducts = async (req, res) => {
   try {
-    const allProducts = await prisma.products.findMany();
+    const allProducts = await prisma.products.findMany()
     return res.status(200).json({
       success: true,
-      message: "List of products",
-      results: allProducts,
-    });
+      message: 'List of products',
+      results: allProducts
+    })
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
-    });
+      message: 'Internal server error'
+    })
   }
-};
+}
 
 exports.getProduct = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params
     const product = await prisma.products.findUnique({
       where: {
-        id: parseInt(id),
+        id: parseInt(id)
       },
       select: {
         id: true,
@@ -38,40 +38,40 @@ exports.getProduct = async (req, res) => {
           select: {
             sizes: {
               select: {
-                name: true,
-              },
-            },
-          },
+                name: true
+              }
+            }
+          }
         },
         productDeliveries: {
           select: {
             deliveryMethods: {
               select: {
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    });
+                name: true
+              }
+            }
+          }
+        }
+      }
+    })
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: `Product with id ${id} not found`,
-      });
+        message: `Product with id ${id} not found`
+      })
     }
     return res.status(200).json({
       success: true,
       message: `Product with id ${id} found`,
-      results: product,
-    });
+      results: product
+    })
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
-    });
+      message: 'Internal server error'
+    })
   }
-};
+}
 
 exports.createProduct = async (req, res) => {
   try {
@@ -82,8 +82,8 @@ exports.createProduct = async (req, res) => {
       stock,
       deliveryStart,
       deliveryEnd,
-      picture,
-    } = req.body;
+      picture
+    } = req.body
     const product = await prisma.products.create({
       data: {
         name,
@@ -92,25 +92,25 @@ exports.createProduct = async (req, res) => {
         stock: parseInt(stock),
         deliveryStart: new Date(deliveryStart),
         deliveryEnd: new Date(deliveryEnd),
-        picture,
-      },
-    });
+        picture
+      }
+    })
     return res.status(201).json({
       success: true,
-      message: "Products created successfully",
-      results: product,
-    });
+      message: 'Products created successfully',
+      results: product
+    })
   } catch (error) {
-    console.log(error);
+    console.log(error)
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
-    });
+      message: 'Internal server error'
+    })
   }
-};
+}
 
 exports.updateProduct = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params
   const {
     name,
     price,
@@ -118,12 +118,12 @@ exports.updateProduct = async (req, res) => {
     stock,
     deliveryStart,
     deliveryEnd,
-    picture,
-  } = req.body;
+    picture
+  } = req.body
   try {
     const product = await prisma.products.update({
       where: {
-        id: parseInt(id),
+        id: parseInt(id)
       },
       data: {
         name,
@@ -132,60 +132,61 @@ exports.updateProduct = async (req, res) => {
         stock: parseInt(stock),
         deliveryStart: new Date(deliveryStart),
         deliveryEnd: new Date(deliveryEnd),
-        picture,
-      },
-    });
+        picture
+      }
+    })
     return res.status(200).json({
       success: true,
       message: `Product with id ${id} updated successfully`,
-      results: product,
-    });
+      results: product
+    })
   } catch (error) {
-    console.log(error);
-    if (error.code === "P2025") {
+    console.log(error)
+    if (error.code === 'P2025') {
       return res.status(404).json({
         success: false,
-        message: `Product with id ${id} not found`,
-      });
+        message: `Product with id ${id} not found`
+      })
     }
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
-    });
+      message: 'Internal server error'
+    })
   }
-};
+}
 
 exports.deleteProduct = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params
   try {
     const product = await prisma.products.delete({
       where: {
-        id: parseInt(id),
-      },
-    });
+        id: parseInt(id)
+      }
+    })
     return res.status(200).json({
       success: true,
       message: `Product with id ${id} deleted successfully`,
-      results: product,
-    });
+      results: product
+    })
   } catch (error) {
-    if (error.code === "P2025") {
+    if (error.code === 'P2025') {
       return res.status(404).json({
         success: false,
-        message: `Product with id ${id} not found`,
-      });
+        message: `Product with id ${id} not found`
+      })
     }
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
-    });
+      message: 'Internal server error'
+    })
   }
-};
+}
 
 exports.getProductsCust = async (req, res) => {
-  req.query.menu = req.query.menu || "Favorite";
-  req.query.limit = parseInt(req.query.limit) || 12;
-  req.query.page = parseInt(req.query.page) || 1;
+  req.query.menu = req.query.menu || 'Favorite'
+  req.query.limit = parseInt(req.query.limit) || 12
+  req.query.page = parseInt(req.query.page) || 1
+  req.query.search = req.query.search || ''
   try {
     const allProducts = await prisma.products.findMany({
       take: req.query.limit,
@@ -194,28 +195,31 @@ exports.getProductsCust = async (req, res) => {
         id: true,
         name: true,
         price: true,
-        picture: true,
+        picture: true
       },
       where: {
         productCategories: {
           some: {
             categories: {
-              name: req.query.menu,
-            },
-          },
+              name: req.query.menu
+            }
+          }
         },
-      },
-    });
+        name: {
+          contains: req.query.search
+        }
+      }
+    })
     return res.status(200).json({
       success: true,
-      message: "List of products",
-      results: allProducts,
-    });
+      message: 'List of products',
+      results: allProducts
+    })
   } catch (error) {
-    console.log(error);
+    console.log(error)
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
-    });
+      message: 'Internal server error'
+    })
   }
-};
+}
