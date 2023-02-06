@@ -64,3 +64,31 @@ exports.createTransactions = async (req, res) => {
     });
   }
 };
+
+exports.deleteTransactions = async (req, res) => {
+  const { id } = req.body;
+  try {
+    const transaction = await prisma.transactions.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: `Transactions with id ${id} deleted successfully`,
+      results: transaction,
+    });
+  } catch (error) {
+    if (error.code === "P2025") {
+      console.log(" hit error 25");
+      return res.status(404).json({
+        success: false,
+        message: `Transactions with id ${id} not found`,
+      });
+    }
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
