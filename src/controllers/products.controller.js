@@ -183,7 +183,7 @@ exports.deleteProduct = async (req, res) => {
 }
 
 exports.getProductsCust = async (req, res) => {
-  req.query.menu = req.query.menu || 'Favorite'
+  req.query.menu = req.query.menu
   req.query.limit = parseInt(req.query.limit) || 12
   req.query.page = parseInt(req.query.page) || 1
   req.query.search = req.query.search || ''
